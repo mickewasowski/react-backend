@@ -26,30 +26,15 @@ export const updateItem = asyncHandler (async (req: Request, res: Response) => {
     if(!succes || !payload) {
         res.status(500).json({succes, message: "Unauthorized"})
         return
-    } 
-
-    if(!newItem._id) {
-        res.status(401).json({succes, message: "Item's '_id' is required"})
-        return
     }
 
-    const item = await Item.findOne({ _id: newItem._id })
+    const item = await getMutableItem(newItem._id, payload.id, res)
+    if (!item) return
     
-
-    if(!item) {
-        res.status(402).json({ success: false, message: "Item not found"})
-        return
-    }
-
-    if(!item.hasSameOwner(payload.id)){
-        res.status(403).json({ success: false, message: "Only the owner of an item can update the item"})
-        return
-    }
-
-    item.name = newItem.name ? newItem.name : item.name
-    item.description = newItem.description ? newItem.description : item.description
-    item.type = newItem.type ? newItem.type : item.type
-    item.image = newItem.image ? newItem.image : item.image
+    item.name = newItem.name ?? item.name
+    item.description = newItem.description ?? item.description
+    item.type = newItem.type ?? item.type
+    item.image = newItem.image ?? item.image
 
     await item.save()
 
@@ -107,26 +92,32 @@ export const deleteItem = asyncHandler(async (req: Request, res: Response) => {
         return
     } 
 
-    if(!_id) {
-        res.status(401).json({succes, message: "Item's '_id' is required"})
-        return
-    }
-
-    const item = await Item.findOne({ _id })
-    
-
-    if(!item) {
-        res.status(402).json({ success: false, message: "Item not found"})
-        return
-    }
-
-    if(!item.hasSameOwner(payload.id)){
-        res.status(403).json({ success: false, message: "Only the owner of an item can update the item"})
-        return
-    }
+    const item = await getMutableItem(_id, payload.id, res)
+    if (!item) return
 
     await item.remove()
     
     res.status(201).json({ success: true, message: "deleted"})
 
 })
+
+const getMutableItem = async (itemId: string, ownerId: string, res: Response) => {
+    if(!itemId) {
+        res.status(401).json({succes: true, message: "Item's '_id' is required"})
+        return
+    }
+
+    const item = await Item.findOne({ _id: itemId })
+    
+    if(!item) {
+        res.status(402).json({ success: false, message: "Item not found"})
+        return
+    }
+
+    if(!item.hasSameOwner(ownerId)){
+        res.status(403).json({ success: false, message: "Only the owner of an item can update the item"})
+        return
+    }
+
+    return item
+}
