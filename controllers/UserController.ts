@@ -1,12 +1,21 @@
 import asyncHandler from 'express-async-handler';
 import { Request, Response } from 'express';
 import User from '../models/User';
-import {generateToken} from '../utils/token';
+import {generateToken, verifyToken} from '../utils/token';
 
 // @Desc Get all users
 // @Route /api/user
 // @Method GET
 export const getAll = asyncHandler(async (req: Request, res: Response) => {
+
+    const token = req.headers.authorization?.replace('Bearer ', '') || ''    
+    
+    const {succes, payload} = verifyToken(token)
+
+    if(!succes || !payload) {
+        res.status(500).json({succes, message: "Unauthorized"})
+        return
+    }
 
     const users = await User.find({}).select('-password');
     res.status(201).json({ success: true, count: users.length, users });

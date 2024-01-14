@@ -17,9 +17,9 @@ Basic Backend Using TypeScript, Express.js, & MongoDB
 
 ## Default urls:
 
-- Login User : POST METHOD on localhost:5000/api/user/login
+- Login User : POST METHOD on localhost:5000/api/user/login 
 - Register User : POST METHOD on localhost:5000/api/user/register
-- Get All Users : GET METHOD on localhost:5000/api/user
+- Get All Users : GET METHOD on localhost:5000/api/user (with valid token, received after login)
 
 - Get all items: GET METHOD on localhost:5000/api/item
 - Add new item: POST METHOD on localhost:5000/api/item (with valid token, received after login)
