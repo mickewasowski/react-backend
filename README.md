@@ -2,10 +2,6 @@
 
 Basic Backend Using TypeScript, Express.js, & MongoDB
 
-## TODO:
-
-- Delete item
-
 ## Features:
 
 - Authentication
