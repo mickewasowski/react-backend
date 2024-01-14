@@ -32,7 +32,7 @@ const ItemSchema = new mongoose.Schema({
     },
 }, {
     timestamps: true
-});
+})
 
 ItemSchema.pre("save", async function(next) {
 
@@ -46,9 +46,9 @@ ItemSchema.pre("save", async function(next) {
 
 ItemSchema.methods.hasSameOwner =  function(owner: string) {
     const item = this as IItem;
-    return item.owner.toString() === owner;
+    return item.owner.toString() === owner
 }
 
-const Item = mongoose.model<IItem>("Item", ItemSchema);
+const Item = mongoose.model<IItem>("Item", ItemSchema)
 
 export default Item;

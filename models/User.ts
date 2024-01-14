@@ -36,22 +36,22 @@ UserSchema.pre("save", async function(next) {
 
     const user = this as IUser;
 
-    if(!user.isModified("password")) return next();
+    if(!user.isModified("password")) return next()
 
-    const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(user.password, salt);
+    const salt = bcrypt.genSaltSync(10)
+    const hash = bcrypt.hashSync(user.password, salt)
     
-    user.password = hash;
+    user.password = hash
 
-    return next();
+    return next()
 
 })
 
 UserSchema.methods.comparePassword =  function(password: string) {
-    const user = this as IUser;
-    return bcrypt.compareSync(password, user.password);
+    const user = this as IUser
+    return bcrypt.compareSync(password, user.password)
 }
 
-const User = mongoose.model<IUser>("User", UserSchema);
+const User = mongoose.model<IUser>("User", UserSchema)
 
-export default User;
+export default User

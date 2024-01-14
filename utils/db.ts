@@ -5,11 +5,11 @@ const connectDB = async () => {
         await mongoose.connect(process.env.MONGO_URI as string, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-        } as ConnectOptions);
-        console.log(`Database ${process.env.MONGO_URI} is connected`);
+        } as ConnectOptions)
+        console.log(`Database ${process.env.MONGO_URI} is connected`)
     } catch (error: any) {
-        console.log(error.message);
+        console.log(error.message)
     }
 }
 
-export default connectDB;
+export default connectDB

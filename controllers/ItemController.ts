@@ -8,8 +8,8 @@ import { verifyToken } from '../utils/token';
 // @Method GET
 export const getAllItems = asyncHandler(async (req: Request, res: Response) => {
 
-    const items = await Item.find({}).select(['-__v']);
-    res.status(201).json({ success: true, count: items.length, items });
+    const items = await Item.find({}).select(['-__v'])
+    res.status(201).json({ successs: true, count: items.length, items })
 
 })
 
@@ -21,10 +21,10 @@ export const updateItem = asyncHandler (async (req: Request, res: Response) => {
     const newItem = req.body
     const token = req.headers.authorization?.replace('Bearer ', '') || ''    
     
-    const {succes, payload} = verifyToken(token)
+    const {success, payload} = verifyToken(token)
 
-    if(!succes || !payload) {
-        res.status(500).json({succes, message: "Unauthorized"})
+    if(!success || !payload) {
+        res.status(500).json({success, message: "Unauthorized"})
         return
     }
 
@@ -38,7 +38,7 @@ export const updateItem = asyncHandler (async (req: Request, res: Response) => {
 
     await item.save()
 
-    res.status(201).json({ success: true, item})
+    res.status(201).json({ successs: true, item})
 
 })
 
@@ -51,19 +51,19 @@ export const postItem = asyncHandler(async (req: Request, res: Response) => {
     const token = req.headers.authorization?.replace('Bearer ', '') || ''
     
     if(!token) {
-        res.status(401).json({succes: false, message: "Token missing"})
+        res.status(401).json({success: false, message: "Token missing"})
         return
     }   
 
-    const {succes, payload} = verifyToken(token)
+    const {success, payload} = verifyToken(token)
 
-    if(!succes || !payload) {
-        res.status(500).json({succes, message: "Unauthorized"})
+    if(!success || !payload) {
+        res.status(500).json({success, message: "Unauthorized"})
         return
     }    
 
     if(!name) {
-        res.status(402).json({succes: false, message: "missing 'name' field"})
+        res.status(402).json({success: false, message: "missing 'name' field"})
         return
     }
     
@@ -73,7 +73,7 @@ export const postItem = asyncHandler(async (req: Request, res: Response) => {
 
     await item.save();
 
-    res.status(201).json({ success: true, item});
+    res.status(201).json({ successs: true, item})
 
 })
 
@@ -85,10 +85,10 @@ export const deleteItem = asyncHandler(async (req: Request, res: Response) => {
     const { _id } = req.body
     const token = req.headers.authorization?.replace('Bearer ', '') || ''    
     
-    const {succes, payload} = verifyToken(token)
+    const {success, payload} = verifyToken(token)
 
-    if(!succes || !payload) {
-        res.status(500).json({succes, message: "Unauthorized"})
+    if(!success || !payload) {
+        res.status(500).json({success, message: "Unauthorized"})
         return
     } 
 
@@ -97,25 +97,25 @@ export const deleteItem = asyncHandler(async (req: Request, res: Response) => {
 
     await item.remove()
     
-    res.status(201).json({ success: true, message: "deleted"})
+    res.status(201).json({ successs: true, message: "deleted"})
 
 })
 
 const getMutableItem = async (itemId: string, ownerId: string, res: Response) => {
     if(!itemId) {
-        res.status(401).json({succes: true, message: "Item's '_id' is required"})
+        res.status(401).json({success: true, message: "Item's '_id' is required"})
         return
     }
 
     const item = await Item.findOne({ _id: itemId })
     
     if(!item) {
-        res.status(402).json({ success: false, message: "Item not found"})
+        res.status(402).json({ successs: false, message: "Item not found"})
         return
     }
 
     if(!item.hasSameOwner(ownerId)){
-        res.status(403).json({ success: false, message: "Only the owner of an item can update the item"})
+        res.status(403).json({ successs: false, message: "Only the owner of an item can update the item"})
         return
     }
 

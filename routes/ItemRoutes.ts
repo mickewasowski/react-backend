@@ -1,8 +1,8 @@
-import express from 'express';
-import { getAllItems, updateItem, postItem, deleteItem } from '../controllers/ItemController';
+import express from 'express'
+import { getAllItems, updateItem, postItem, deleteItem } from '../controllers/ItemController'
 
-const router = express.Router();
+const router = express.Router()
 
-router.route("/").get(getAllItems).post(postItem).patch(updateItem).delete(deleteItem);
+router.route("/").get(getAllItems).post(postItem).patch(updateItem).delete(deleteItem)
 
-export default router;
+export default router

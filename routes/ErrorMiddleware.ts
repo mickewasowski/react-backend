@@ -9,5 +9,5 @@ export const pageNotFound = async (req: Request, res: Response, next: NextFuncti
 export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode);
-  res.json({ success: false, message: err.message });
+  res.json({ successs: false, message: err.message });
 }

@@ -12,12 +12,12 @@ export const generateToken = (id: string) => {
 }
 
 
-export const verifyToken = (token: string): {succes: boolean, payload?: JwtPayload} => {
+export const verifyToken = (token: string): {success: boolean, payload?: JwtPayload} => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload
-    return {succes: true, payload: decoded}
+    return {success: true, payload: decoded}
   } catch (e){
       console.log({e})    
-      return {succes: false}
+      return {success: false}
   }
 }

@@ -9,16 +9,15 @@ import {generateToken, verifyToken} from '../utils/token';
 export const getAll = asyncHandler(async (req: Request, res: Response) => {
 
     const token = req.headers.authorization?.replace('Bearer ', '') || ''    
-    
-    const {succes, payload} = verifyToken(token)
+    const {success, payload} = verifyToken(token)
 
-    if(!succes || !payload) {
-        res.status(500).json({succes, message: "Unauthorized"})
+    if(!success || !payload) {
+        res.status(500).json({success, message: "Unauthorized"})
         return
     }
 
-    const users = await User.find({}).select('-password');
-    res.status(201).json({ success: true, count: users.length, users });
+    const users = await User.find({}).select('-password')
+    res.status(201).json({ successs: true, count: users.length, users })
 
 })
 
@@ -27,25 +26,72 @@ export const getAll = asyncHandler(async (req: Request, res: Response) => {
 // @Method POST
 export const login = asyncHandler (async (req: Request, res: Response) => {
 
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const { email, password } = req.body
+    const user = await User.findOne({ email })
 
     if(!user) {
-        res.status(401).json({succes: false, message: 'User not found'})
+        res.status(401).json({success: false, message: 'User not found'})
         return
     }
 
-    if(user.comparePassword(password)) {
-        res.status(201).json({ success: true, user: {
-            id: user._id,
-            email: user.email,
-            fullName: user.fullName,
-            token: generateToken(user._id)
-        }})
-    } else {
-        res.status(401);
-        throw new Error("Email or password incorrect");
+    if(!user.comparePassword(password)) {
+        res.status(401).json({success: false, message: 'Email or password incorrect'});
+        return
+        
+    } 
+
+    res.status(201).json({ successs: true, user: {
+        id: user._id,
+        email: user.email,
+        fullName: user.fullName,
+        token: generateToken(user._id)
+    }})
+
+})
+
+// @Desc Login 
+// @Route /api/user
+// @Method PATCH
+export const updateUser = asyncHandler (async (req: Request, res: Response) => {
+
+    const { email: newEmail, fullName: newFullName, password, newPassword } = req.body
+    const token = req.headers.authorization?.replace('Bearer ', '') || ''    
+    
+    const {success, payload} = verifyToken(token)
+
+    if(!success || !payload) {
+        res.status(500).json({success, message: 'Unauthorized'})
+        return
     }
+
+    if(!password) {
+        res.status(500).json({success: false, message: 'Password is required'})
+        return 
+    }
+
+    const user = await User.findOne({ _id: payload.id })
+
+    if(!user) {
+        res.status(401).json({success: false, message: 'User not found'})
+        return
+    }
+
+    if(!user.comparePassword(password)) {
+        res.status(401).json({success: false, message: 'Password incorrect'})
+        return        
+    } 
+    
+    user.email = newEmail ?? user.email
+    user.fullName = newFullName ?? user.fullName
+    user.password = newPassword ?? user.password
+
+    await user.save()
+
+    res.status(201).json({ successs: true, user: {
+        id: user._id,
+        email: user.email,
+        fullName: user.fullName
+    }})
 
 })
 
@@ -54,7 +100,14 @@ export const login = asyncHandler (async (req: Request, res: Response) => {
 // @Method POST
 export const register = asyncHandler(async (req: Request, res: Response) => {
 
-    const { email, fullName, password } = req.body;
+    const { email, fullName, password } = req.body
+
+    const existingUser = await User.findOne({ email })
+
+    if(existingUser){
+        res.status(403).json({success: false, message: 'Email is already registered'})
+        return
+    }
 
     const user = new User({
         email, fullName, password
@@ -62,9 +115,9 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
     await user.save();
 
-    res.status(201).json({ success: true, user: {
+    res.status(201).json({ successs: true, user: {
         email: user.email,
         fullName: user.fullName
-    } });
+    } })
 
 })
