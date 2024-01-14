@@ -24,6 +24,7 @@ Basic Backend Using TypeScript, Express.js, & MongoDB
 - Get all items: GET METHOD on localhost:5000/api/item
 - Add new item: POST METHOD on localhost:5000/api/item (with valid token, received after login)
 - Update item: PATCH METHOD on localhost:5000/api/item (with valid token, received after login)
+- Delete item: Delete METHOD on localhost:5000/api/item (with valid token, received after login)
 
 ## Usage
 
