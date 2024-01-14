@@ -92,7 +92,7 @@ export const postItem = asyncHandler(async (req: Request, res: Response) => {
 
 })
 
-// @Desc add new item
+// @Desc delete item
 // @Route /api/item
 // @Method DELETE
 export const deleteItem = asyncHandler(async (req: Request, res: Response) => {

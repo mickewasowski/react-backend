@@ -10,5 +10,4 @@ export const errorHandler = (err: any, req: Request, res: Response, next: NextFu
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode);
   res.json({ success: false, message: err.message });
-  next('lala')
 }
