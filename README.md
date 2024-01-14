@@ -22,6 +22,7 @@ Basic Backend Using TypeScript, Express.js, & MongoDB
 - Login User : POST METHOD on localhost:5000/api/user/login 
 - Register User : POST METHOD on localhost:5000/api/user/register
 - Get All Users : GET METHOD on localhost:5000/api/user (with valid token, received after login)
+- update user : PATCH METHOD on localhost:5000/api/user (with valid token, received after login)
 
 ### Item
 
@@ -60,4 +61,13 @@ linux: sudo systemctl start mongod
 npm run server
 
 ```
+
+## Testing
+
+There is a postman collection in the root folder: BasicBackend.postman_collection.json.
+
+### Usage
+
+- import using postman
+- update the authorization header with the bearertoken received after logging in where appropriate
 

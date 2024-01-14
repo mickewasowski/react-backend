@@ -27,6 +27,12 @@ export const getAll = asyncHandler(async (req: Request, res: Response) => {
 export const login = asyncHandler (async (req: Request, res: Response) => {
 
     const { email, password } = req.body
+
+    if(!email || !password) {
+        res.status(406).json({success: false, message: 'Dont forget to add the Email and password to your request'})
+        return 
+    }
+
     const user = await User.findOne({ email })
 
     if(!user) {
@@ -35,7 +41,7 @@ export const login = asyncHandler (async (req: Request, res: Response) => {
     }
 
     if(!user.comparePassword(password)) {
-        res.status(401).json({success: false, message: 'Email or password incorrect'});
+        res.status(402).json({success: false, message: 'Password is incorrect'});
         return
         
     } 
@@ -65,7 +71,7 @@ export const updateUser = asyncHandler (async (req: Request, res: Response) => {
     }
 
     if(!password) {
-        res.status(500).json({success: false, message: 'Password is required'})
+        res.status(405).json({success: false, message: 'Password is required'})
         return 
     }
 
@@ -77,7 +83,7 @@ export const updateUser = asyncHandler (async (req: Request, res: Response) => {
     }
 
     if(!user.comparePassword(password)) {
-        res.status(401).json({success: false, message: 'Password incorrect'})
+        res.status(402).json({success: false, message: 'Password incorrect'})
         return        
     } 
     
@@ -85,13 +91,21 @@ export const updateUser = asyncHandler (async (req: Request, res: Response) => {
     user.fullName = newFullName ?? user.fullName
     user.password = newPassword ?? user.password
 
-    await user.save()
+    try {
+        await user.save()
+        res.status(201).json({ successs: true, user: {
+            id: user._id,
+            email: user.email,
+            fullName: user.fullName
+        }})
+    } catch (error: any) {        
+        if (error?.code === 11000  ){
+            res.status(403).json({success: false, message: 'Email is already registered'})
+            return
+        }
 
-    res.status(201).json({ successs: true, user: {
-        id: user._id,
-        email: user.email,
-        fullName: user.fullName
-    }})
+        res.status(500).json({success: false, error})
+    }    
 
 })
 
