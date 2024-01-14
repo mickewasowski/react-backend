@@ -8,7 +8,7 @@ import { verifyToken } from '../utils/token';
 // @Method GET
 export const getAllItems = asyncHandler(async (req: Request, res: Response) => {
 
-    const items = await Item.find({}).select(['-__v'])
+    const items = await Item.find({}).select(['-__v', '-owner'])
     res.status(201).json({ successs: true, count: items.length, items })
 
 })
