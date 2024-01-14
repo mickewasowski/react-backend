@@ -22,7 +22,7 @@ Basic Backend Using TypeScript, Express.js, & MongoDB
 - Login User : POST METHOD on localhost:5000/api/user/login 
 - Register User : POST METHOD on localhost:5000/api/user/register
 - Get All Users : GET METHOD on localhost:5000/api/user (with valid token, received after login)
-- update user : PATCH METHOD on localhost:5000/api/user (with valid token, received after login)
+- Update user : PATCH METHOD on localhost:5000/api/user (with valid token, received after login)
 
 ### Item
 
