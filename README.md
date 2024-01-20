@@ -51,6 +51,13 @@ npm install
 
 ```
 
+### Seed users and recepies
+
+```
+npm run seedDB
+
+```
+
 ### Run App
 
 ```
