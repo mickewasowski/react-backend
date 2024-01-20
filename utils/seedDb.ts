@@ -201,7 +201,10 @@ const seedUsers = async () => {
 
     await User.deleteMany({});
 
-    await User.insertMany(users);
+    for (let user of users) {
+      const newUser = new User({ ...user });
+      await newUser.save();
+    }
 
     console.log('Users seeded!');
     mongoose.disconnect();

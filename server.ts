@@ -4,11 +4,14 @@ import connectDB from './utils/db';
 import { pageNotFound, errorHandler } from './routes/ErrorMiddleware';
 import UserRoutes from './routes/UserRoutes';
 import ItemRoutes from './routes/ItemRoutes';
+import cors from 'cors';
 
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 const app: Application = express();
+
+app.use(cors());
 
 connectDB();
 app.use(express.json());
