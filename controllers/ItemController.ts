@@ -9,7 +9,7 @@ import { verifyToken } from '../utils/token';
 export const getAllItems = asyncHandler(async (req: Request, res: Response) => {
 
     const items = await Item.find({}).select(['-__v', '-owner'])
-    res.status(201).json({ successs: true, count: items.length, items })
+    res.status(201).json({ success: true, count: items.length, items })
 
 })
 
@@ -38,7 +38,7 @@ export const updateItem = asyncHandler (async (req: Request, res: Response) => {
 
     await item.save()
 
-    res.status(201).json({ successs: true, item})
+    res.status(201).json({ success: true, item})
 
 })
 
@@ -73,7 +73,7 @@ export const postItem = asyncHandler(async (req: Request, res: Response) => {
 
     await item.save();
 
-    res.status(201).json({ successs: true, item})
+    res.status(201).json({ success: true, item})
 
 })
 
@@ -97,7 +97,7 @@ export const deleteItem = asyncHandler(async (req: Request, res: Response) => {
 
     await item.remove()
     
-    res.status(201).json({ successs: true, message: "deleted"})
+    res.status(201).json({ success: true, message: "deleted"})
 
 })
 
@@ -110,12 +110,12 @@ const getMutableItem = async (itemId: string, ownerId: string, res: Response) =>
     const item = await Item.findOne({ _id: itemId })
     
     if(!item) {
-        res.status(402).json({ successs: false, message: "Item not found"})
+        res.status(402).json({ success: false, message: "Item not found"})
         return
     }
 
     if(!item.hasSameOwner(ownerId)){
-        res.status(403).json({ successs: false, message: "Only the owner of an item can update the item"})
+        res.status(403).json({ success: false, message: "Only the owner of an item can update the item"})
         return
     }
 

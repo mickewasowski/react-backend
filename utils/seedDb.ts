@@ -17,13 +17,13 @@ const recepies = [
     {
         "name": "Spaghetti Bolognese",
         "description": "Classic Italian pasta dish with meaty tomato sauce",
-        "type": "recipe",
+        "type": "pasta",
         "image": "https://carlsbadcravings.com/wp-content/uploads/2017/02/Weeknight-Spaghtetti-Bolognese-15-500x500.jpg",
     },
     {
       "name": "Chicken Alfredo Pasta",
       "description": "Creamy Alfredo sauce with grilled chicken and pasta",
-      "type": "recipe",
+      "type": "pasta",
       "image": "https://thecozycook.com/wp-content/uploads/2022/08/Chicken-Alfredo-Pasta-2.jpg"
     },
     {

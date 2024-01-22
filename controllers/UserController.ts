@@ -17,7 +17,7 @@ export const getAll = asyncHandler(async (req: Request, res: Response) => {
     }
 
     const users = await User.find({}).select('-password')
-    res.status(201).json({ successs: true, count: users.length, users })
+    res.status(201).json({ success: true, count: users.length, users })
 
 })
 
@@ -46,7 +46,7 @@ export const login = asyncHandler (async (req: Request, res: Response) => {
         
     } 
 
-    res.status(201).json({ successs: true, user: {
+    res.status(201).json({ success: true, user: {
         id: user._id,
         email: user.email,
         fullName: user.fullName,
@@ -93,7 +93,7 @@ export const updateUser = asyncHandler (async (req: Request, res: Response) => {
 
     try {
         await user.save()
-        res.status(201).json({ successs: true, user: {
+        res.status(201).json({ success: true, user: {
             id: user._id,
             email: user.email,
             fullName: user.fullName
@@ -129,7 +129,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
     await user.save();
 
-    res.status(201).json({ successs: true, user: {
+    res.status(201).json({ success: true, user: {
         email: user.email,
         fullName: user.fullName
     } })
