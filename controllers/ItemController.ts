@@ -20,6 +20,14 @@ export const getAllItems = asyncHandler(async (req: Request, res: Response) => {
     }
 });
 
+// @Desc Get all items count
+// @Route /api/item/count
+// @Method GET
+export const getAllItemsCount = asyncHandler(async (req: Request, res: Response) => {
+    const count = await Item.countDocuments();
+    res.status(200).json({ success: true, count });
+});
+
 // @Desc update item 
 // @Route /api/item
 // @Method PATCH
