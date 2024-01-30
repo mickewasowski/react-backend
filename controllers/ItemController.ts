@@ -12,7 +12,7 @@ export const getAllItems = asyncHandler(async (req: Request, res: Response) => {
         const limit: number = parseInt(req.query.limit);
         const startIndex = (page - 1) * limit;
 
-        const items = await Item.find({}).skip(startIndex).limit(limit).select(['-__v', '-owner']);
+        const items = await Item.find({}).skip(startIndex).limit(limit).select(['-__v']);
 
         res.status(201).json({ success: true, count: items.length, items })
     } else {
