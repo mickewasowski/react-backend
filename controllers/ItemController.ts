@@ -32,7 +32,6 @@ export const getAllItemsCount = asyncHandler(async (req: Request, res: Response)
 // @Route /api/item
 // @Method PATCH
 export const updateItem = asyncHandler (async (req: Request, res: Response) => {
-
     const newItem = req.body;
     const token = req.headers.authorization?.replace('Bearer ', '') || '';
     
@@ -50,6 +49,7 @@ export const updateItem = asyncHandler (async (req: Request, res: Response) => {
     item.description = newItem.description ?? item.description;
     item.type = newItem.type ?? item.type;
     item.image = newItem.image ?? item.image;
+    item.additionalData = newItem.additionalData ?? item.additionalData;
 
     await item.save();
 
@@ -60,8 +60,7 @@ export const updateItem = asyncHandler (async (req: Request, res: Response) => {
 // @Route /api/item
 // @Method POST
 export const postItem = asyncHandler(async (req: Request, res: Response) => {
-
-    const { name, description, type, image } = req.body;
+    const { name, description, type, image, additionalData } = req.body;
     const token = req.headers.authorization?.replace('Bearer ', '') || '';
 
     if(!token) {
@@ -82,7 +81,7 @@ export const postItem = asyncHandler(async (req: Request, res: Response) => {
     }
     
     const item = new Item({
-        name, description, type, image, owner: payload.id
+        name, description, type, image, owner: payload.id, additionalData
     });
 
     await item.save();

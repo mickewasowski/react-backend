@@ -6,6 +6,7 @@ export interface IItem extends mongoose.Document {
     type?: string,
     image?: string,
     owner: ObjectId,
+    additionalData?: Record<string, any>,
     createdAt: Date,
     updatedAt: Date,
     hasSameOwner(item: string):boolean
@@ -30,25 +31,27 @@ const ItemSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
+    additionalData: {
+        type: mongoose.Schema.Types.Mixed
+    }
 }, {
     timestamps: true
-})
+});
 
 ItemSchema.pre("save", async function(next) {
 
     const item = this as unknown as IItem;
 
-    if(!item.isModified()) console.log(`Item ${item._id} is not modified`)
+    if(!item.isModified()) console.log(`Item ${item._id} is not modified`);
     
     return next();
-
-})
+});
 
 ItemSchema.methods.hasSameOwner =  function(owner: string) {
     const item = this as IItem;
-    return item.owner.toString() === owner
+    return item.owner.toString() === owner;
 }
 
-const Item = mongoose.model<IItem>("Item", ItemSchema)
+const Item = mongoose.model<IItem>("Item", ItemSchema);
 
 export default Item;
