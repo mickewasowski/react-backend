@@ -14,9 +14,38 @@ export const getAllItems = asyncHandler(async (req: Request, res: Response) => {
 
         const items = await Item.find({}).skip(startIndex).limit(limit).select(['-__v']);
 
-        res.status(201).json({ success: true, count: items.length, items })
+        res.status(200).json({ success: true, count: items.length, items })
     } else {
         res.status(400).json({ success: false, message: 'Page and Limit must be provided!' });
+    }
+});
+
+// @Desc Get all items count
+// @Route /api/item/search?q1=salad&q2=shopska
+// @Method GET
+export const searchItem = asyncHandler(async (req: Request, res: Response) => {
+    const queryParams = req.query;
+    let allWordsFromQuery: string[] = [];
+
+    for (const key in queryParams) {
+        if (key.startsWith('q')) {
+            allWordsFromQuery.push(queryParams[key] as string);
+        }
+    }
+    
+    if (allWordsFromQuery) {
+        const items = (await Item.find({}))
+            .filter(x => allWordsFromQuery.includes(x.name)
+                || allWordsFromQuery.some(word => x.description?.includes(word))
+                || allWordsFromQuery.some(word => x.additionalData?.ingredients?.includes(word)));
+
+        if (items) {
+            res.status(200).json({ success: true, count: items.length, items });
+        } else {
+            res.status(404).json({ success: false, message: 'No items found!' });
+        }
+    } else {
+        res.status(400).json({ success: false, message: 'No search query was provided!' });
     }
 });
 
