@@ -50,6 +50,35 @@ export const searchItem = asyncHandler(async (req: Request, res: Response) => {
 });
 
 // @Desc Get all items count
+// @Route /api/item/owned
+// @Method GET
+export const getAllItemsPerOwner = asyncHandler(async (req: Request, res: Response) => {
+    const ownerId = req.body.ownerId;
+    const token = req.headers.authorization?.replace('Bearer ', '') || '';
+
+    const { success, payload } = verifyToken(token);
+
+    if (!success || !payload) {
+        res.status(500).json({success, message: "Unauthorized"});
+        return;
+    }
+
+    if (!ownerId) {
+        res.status(400).json({success, message: "No owner ID has been provided!"});
+        return;
+    }
+
+    const items = await Item.find({ owner: ownerId });
+
+    if (items) {
+        res.status(200).json({ success: true, count: items.length, items });
+    } else {
+        res.status(404).json({ success: false, message: 'No items found!' });
+    }
+    return;
+});
+
+// @Desc Get all items count
 // @Route /api/item/count
 // @Method GET
 export const getAllItemsCount = asyncHandler(async (req: Request, res: Response) => {
