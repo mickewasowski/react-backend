@@ -53,7 +53,7 @@ export const searchItem = asyncHandler(async (req: Request, res: Response) => {
 // @Route /api/item/owned
 // @Method GET
 export const getAllItemsPerOwner = asyncHandler(async (req: Request, res: Response) => {
-    const ownerId = req.body.ownerId;
+    const ownerId = req.query.ownerId;
     const token = req.headers.authorization?.replace('Bearer ', '') || '';
 
     const { success, payload } = verifyToken(token);
