@@ -114,6 +114,14 @@ export const updateItem = asyncHandler (async (req: Request, res: Response) => {
     res.status(201).json({ success: true, item});
 });
 
+// @Desc Get latest 3 added recipes
+// @Route /api/item/latest
+// @Method GET
+export const getLatestThreeAdded = asyncHandler(async (req: Request, res: Response) => {
+    const allItems = await Item.find().sort({ createdAt: -1 }).limit(3).select(['-__v']);
+    res.status(200).json({ success: true, items: allItems });
+});
+
 // @Desc add new item
 // @Route /api/item
 // @Method POST

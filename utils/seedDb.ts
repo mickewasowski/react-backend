@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const password = "commonPassword123";
-
+//juan@example.com
 const users = [
     { email: "alice@example.com", fullName: "Alice Johnson", password: password },
     { email: "bob@example.com", fullName: "Bob Smith", password: password },
