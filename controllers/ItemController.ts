@@ -101,7 +101,10 @@ export const updateItem = asyncHandler (async (req: Request, res: Response) => {
     }
 
     const item = await getMutableItem(newItem._id, payload.id, res);
-    if (!item) return;
+    if (!item) {
+        res.status(404).json({ success, message: "No item found with this ID!" });
+        return;
+    }
     
     item.name = newItem.name ?? item.name;
     item.description = newItem.description ?? item.description;
