@@ -12,7 +12,7 @@ export const getAllItems = asyncHandler(async (req: Request, res: Response) => {
         const limit: number = parseInt(req.query.limit);
         const startIndex = (page - 1) * limit;
 
-        const items = await Item.find({}).skip(startIndex).limit(limit).select(['-__v']);
+        const items = await Item.find({}).sort({ createdAt: -1 }).skip(startIndex).limit(limit).select(['-__v']);
 
         res.status(200).json({ success: true, count: items.length, items })
     } else {
@@ -67,7 +67,6 @@ export const getAllItemsCountPerOwner = asyncHandler(async (req: Request, res: R
     } else {
         res.status(404).json({ success: false, message: 'No items found!' });
     }
-    return;
 });
 
 
@@ -80,7 +79,7 @@ export const getItemsPerOwner = asyncHandler(async (req: Request, res: Response)
         const limit: number = parseInt(req.query.limit);
         const startIndex = (page - 1) * limit;
         const ownerId = req.query.id;
-        const items = await Item.find({ owner: ownerId }).skip(startIndex).limit(limit).select(['-__v']);
+        const items = await Item.find({ owner: ownerId }).sort({ createdAt: -1 }).skip(startIndex).limit(limit).select(['-__v']);
 
         res.status(200).json({ success: true, count: items.length, items })
     } else {
