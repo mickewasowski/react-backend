@@ -50,38 +50,50 @@ export const searchItem = asyncHandler(async (req: Request, res: Response) => {
 });
 
 // @Desc Get all items count
-// @Route /api/item/owned
+// @Route /api/item/ownedCount
 // @Method GET
-export const getAllItemsPerOwner = asyncHandler(async (req: Request, res: Response) => {
+export const getAllItemsCountPerOwner = asyncHandler(async (req: Request, res: Response) => {
     const ownerId = req.query.ownerId;
-    const token = req.headers.authorization?.replace('Bearer ', '') || '';
-
-    const { success, payload } = verifyToken(token);
-
-    if (!success || !payload) {
-        res.status(500).json({success, message: "Unauthorized"});
-        return;
-    }
 
     if (!ownerId) {
-        res.status(400).json({success, message: "No owner ID has been provided!"});
+        res.status(400).json({ success: false, message: "No owner ID has been provided!"});
         return;
     }
 
     const items = await Item.find({ owner: ownerId });
 
     if (items) {
-        res.status(200).json({ success: true, count: items.length, items });
+        res.status(200).json({ success: true, count: items.length });
     } else {
         res.status(404).json({ success: false, message: 'No items found!' });
     }
     return;
 });
 
+
+// @Desc Get all items per owner
+// @Route /api/item/owned?page=1&limit=10&id=someUserId
+// @Method GET
+export const getItemsPerOwner = asyncHandler(async (req: Request, res: Response) => {
+    if (typeof req.query.page === 'string' && typeof req.query.limit === 'string' && typeof req.query.id === 'string') {
+        const page: number = parseInt(req.query.page);
+        const limit: number = parseInt(req.query.limit);
+        const startIndex = (page - 1) * limit;
+        const ownerId = req.query.id;
+        const items = await Item.find({ owner: ownerId }).skip(startIndex).limit(limit).select(['-__v']);
+
+        res.status(200).json({ success: true, count: items.length, items })
+    } else {
+        res.status(400).json({ success: false, message: 'Page, Limit and Id must be provided!' });
+    }
+});
+
 // @Desc Get all items count
 // @Route /api/item/count
 // @Method GET
 export const getAllItemsCount = asyncHandler(async (req: Request, res: Response) => {
+    //TODO: add a property either all or owned
+    // for owned we'll need to pass a ownerId
     const count = await Item.countDocuments();
     res.status(200).json({ success: true, count });
 });
