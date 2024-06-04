@@ -140,7 +140,7 @@ export const getLatestThreeAdded = asyncHandler(async (req: Request, res: Respon
 // @Route /api/item
 // @Method POST
 export const postItem = asyncHandler(async (req: Request, res: Response) => {
-    const { name, description, type, image, additionalData } = req.body;
+    const { name, description, type, image, additionalData: additionalDataFromRequest } = req.body;
     const token = req.headers.authorization?.replace('Bearer ', '') || '';
 
     if(!token) {
@@ -159,9 +159,17 @@ export const postItem = asyncHandler(async (req: Request, res: Response) => {
         res.status(402).json({success: false, message: "missing 'name' field"});
         return;
     }
+
+    const jsonObject = JSON.parse(additionalDataFromRequest);
+    // Create a new Map and populate it from the object
+    const additionalData = new Map();
+    Object.entries(jsonObject).forEach(([key, value]) => {
+        const valueArray = value as unknown[]; 
+        additionalData.set(valueArray[0], valueArray[1]);
+    });
     
     const item = new Item({
-        name, description, type, image, owner: payload.id, additionalData
+        name, description, type, image, owner: payload.id, additionalData: additionalData
     });
 
     await item.save();
