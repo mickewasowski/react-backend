@@ -121,7 +121,9 @@ export const updateItem = asyncHandler (async (req: Request, res: Response) => {
     item.description = newItem.description ?? item.description;
     item.type = newItem.type ?? item.type;
     item.image = newItem.image ?? item.image;
-    item.additionalData = newItem.additionalData ?? item.additionalData;
+
+    const additionalData = JSON.parse(newItem.additionalData);
+    item.additionalData = additionalData ?? item.additionalData;
 
     await item.save();
 
@@ -160,13 +162,7 @@ export const postItem = asyncHandler(async (req: Request, res: Response) => {
         return;
     }
 
-    const jsonObject = JSON.parse(additionalDataFromRequest);
-    // Create a new Map and populate it from the object
-    const additionalData = new Map();
-    Object.entries(jsonObject).forEach(([key, value]) => {
-        const valueArray = value as unknown[]; 
-        additionalData.set(valueArray[0], valueArray[1]);
-    });
+    const additionalData = JSON.parse(additionalDataFromRequest);
     
     const item = new Item({
         name, description, type, image, owner: payload.id, additionalData: additionalData
