@@ -24,28 +24,40 @@ export const getAllItems = asyncHandler(async (req: Request, res: Response) => {
 // @Route /api/item/search?q1=salad&q2=shopska
 // @Method GET
 export const searchItem = asyncHandler(async (req: Request, res: Response) => {
-    const queryParams = req.query;
-    let allWordsFromQuery: string[] = [];
-
-    for (const key in queryParams) {
-        if (key.startsWith('q')) {
-            allWordsFromQuery.push(queryParams[key] as string);
-        }
-    }
+    if (typeof req.query.page === 'string' && typeof req.query.limit === 'string') {
+        const page: number = parseInt(req.query.page);
+        const limit: number = parseInt(req.query.limit);
+        const startIndex = (page - 1) * limit;
+        const queryParams = req.query;
+        let allWordsFromQuery: string[] = [];
     
-    if (allWordsFromQuery) {
-        const items = (await Item.find({}))
-            .filter(x => allWordsFromQuery.includes(x.name)
-                || allWordsFromQuery.some(word => x.description?.includes(word))
-                || allWordsFromQuery.some(word => x.additionalData?.ingredients?.includes(word)));
-
-        if (items) {
-            res.status(200).json({ success: true, count: items.length, items });
-        } else {
-            res.status(404).json({ success: false, message: 'No items found!' });
+        for (const key in queryParams) {
+            if (key.startsWith('q')) {
+                allWordsFromQuery.push(queryParams[key] as string);
+            }
         }
-    } else {
-        res.status(400).json({ success: false, message: 'No search query was provided!' });
+        
+        if (allWordsFromQuery) {
+            const items = await Item.find({
+                $or: [
+                    { name: { $in: allWordsFromQuery } },
+                    { description: { $regex: allWordsFromQuery.join('|'), $options: 'i' } },
+                    { 'additionalData.ingredients': { $regex: allWordsFromQuery.join('|'), $options: 'i' } }
+                ]
+            })
+            .sort({ createdAt: -1 })
+            .skip(startIndex)
+            .limit(limit)
+            .select('-__v');
+    
+            if (items) {
+                res.status(200).json({ success: true, count: items.length, items });
+            } else {
+                res.status(404).json({ success: false, message: 'No items found!' });
+            }
+        } else {
+            res.status(400).json({ success: false, message: 'No search query was provided!' });
+        }
     }
 });
 
@@ -91,8 +103,6 @@ export const getItemsPerOwner = asyncHandler(async (req: Request, res: Response)
 // @Route /api/item/count
 // @Method GET
 export const getAllItemsCount = asyncHandler(async (req: Request, res: Response) => {
-    //TODO: add a property either all or owned
-    // for owned we'll need to pass a ownerId
     const count = await Item.countDocuments();
     res.status(200).json({ success: true, count });
 });
