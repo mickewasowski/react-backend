@@ -12,7 +12,30 @@ export const getAllItems = asyncHandler(async (req: Request, res: Response) => {
         const limit: number = parseInt(req.query.limit);
         const startIndex = (page - 1) * limit;
 
-        const items = await Item.find({}).sort({ createdAt: -1 }).skip(startIndex).limit(limit).select(['-__v']);
+        let items;
+        const queryParams = req.query;
+        let allWordsFromQuery: string[] = [];
+
+        for (const key in queryParams) {
+            if (key.startsWith('q')) {
+                allWordsFromQuery.push(queryParams[key] as string);
+            }
+        }
+
+        if (allWordsFromQuery.length) {
+            items = await Item.find({
+                $or: [
+                    { name: { $regex: allWordsFromQuery.map(word => new RegExp(word, 'i')).join('|') } },
+                    { description: { $regex: allWordsFromQuery.join('|'), $options: 'i' } },
+                    { 'additionalData.ingredients': { 
+                        $regex: allWordsFromQuery.join('|'), $options: 'i' 
+                    }}
+                ]
+            })
+            .sort({ createdAt: -1 }).skip(startIndex).limit(limit).select(['-__v'])
+        } else {
+            items = await Item.find({ }).sort({ createdAt: -1 }).skip(startIndex).limit(limit).select(['-__v']);
+        }
 
         res.status(200).json({ success: true, count: items.length, items })
     } else {
@@ -20,46 +43,54 @@ export const getAllItems = asyncHandler(async (req: Request, res: Response) => {
     }
 });
 
+//DEPRECATED
 // @Desc Get all items count
 // @Route /api/item/search?q1=salad&q2=shopska
 // @Method GET
-export const searchItem = asyncHandler(async (req: Request, res: Response) => {
-    if (typeof req.query.page === 'string' && typeof req.query.limit === 'string') {
-        const page: number = parseInt(req.query.page);
-        const limit: number = parseInt(req.query.limit);
-        const startIndex = (page - 1) * limit;
-        const queryParams = req.query;
-        let allWordsFromQuery: string[] = [];
+// export const searchItem = asyncHandler(async (req: Request, res: Response) => {
+//     if (typeof req.query.page === 'string' && typeof req.query.limit === 'string') {
+//         const page: number = parseInt(req.query.page);
+//         const limit: number = parseInt(req.query.limit);
+//         const startIndex = (page - 1) * limit;
+//         const queryParams = req.query;
+//         let allWordsFromQuery: string[] = [];
     
-        for (const key in queryParams) {
-            if (key.startsWith('q')) {
-                allWordsFromQuery.push(queryParams[key] as string);
-            }
-        }
+//         for (const key in queryParams) {
+//             if (key.startsWith('q')) {
+//                 allWordsFromQuery.push(queryParams[key] as string);
+//             }
+//         }
         
-        if (allWordsFromQuery) {
-            const items = await Item.find({
-                $or: [
-                    { name: { $in: allWordsFromQuery } },
-                    { description: { $regex: allWordsFromQuery.join('|'), $options: 'i' } },
-                    { 'additionalData.ingredients': { $regex: allWordsFromQuery.join('|'), $options: 'i' } }
-                ]
-            })
-            .sort({ createdAt: -1 })
-            .skip(startIndex)
-            .limit(limit)
-            .select('-__v');
+//         if (allWordsFromQuery) {
+//             const count = await Item.find({
+//                 $or: [
+//                     { name: { $in: allWordsFromQuery } },
+//                     { description: { $regex: allWordsFromQuery.join('|'), $options: 'i' } },
+//                     { 'additionalData.ingredients': { $regex: allWordsFromQuery.join('|'), $options: 'i' } }
+//                 ]
+//             }).count();
+//             const items = await Item.find({
+//                 $or: [
+//                     { name: { $in: allWordsFromQuery } },
+//                     { description: { $regex: allWordsFromQuery.join('|'), $options: 'i' } },
+//                     { 'additionalData.ingredients': { $regex: allWordsFromQuery.join('|'), $options: 'i' } }
+//                 ]
+//             })
+//             .sort({ createdAt: -1 })
+//             .skip(startIndex)
+//             .limit(limit)
+//             .select('-__v');
     
-            if (items) {
-                res.status(200).json({ success: true, count: items.length, items });
-            } else {
-                res.status(404).json({ success: false, message: 'No items found!' });
-            }
-        } else {
-            res.status(400).json({ success: false, message: 'No search query was provided!' });
-        }
-    }
-});
+//             if (items) {
+//                 res.status(200).json({ success: true, count, items });
+//             } else {
+//                 res.status(404).json({ success: false, message: 'No items found!' });
+//             }
+//         } else {
+//             res.status(400).json({ success: false, message: 'No search query was provided!' });
+//         }
+//     }
+// });
 
 // @Desc Get all items count
 // @Route /api/item/ownedCount
@@ -72,7 +103,31 @@ export const getAllItemsCountPerOwner = asyncHandler(async (req: Request, res: R
         return;
     }
 
-    const items = await Item.find({ owner: ownerId });
+    let items;
+    const queryParams = req.query;
+    let allWordsFromQuery: string[] = [];
+
+    for (const key in queryParams) {
+        if (key.startsWith('q')) {
+            allWordsFromQuery.push(queryParams[key] as string);
+        }
+    }
+
+    if (allWordsFromQuery.length) {
+        items = await Item.find({
+            owner: ownerId,
+            $or: [
+                { name: { $regex: allWordsFromQuery.map(word => new RegExp(word, 'i')).join('|') } },
+                { description: { $regex: allWordsFromQuery.join('|'), $options: 'i' } },
+                { 'additionalData.ingredients': { 
+                    $regex: allWordsFromQuery.join('|'), $options: 'i' 
+                }}
+            ]
+        })
+        .select('-__v');
+    } else {
+        items = await Item.find({ owner: ownerId });
+    }
 
     if (items) {
         res.status(200).json({ success: true, count: items.length });
@@ -91,7 +146,34 @@ export const getItemsPerOwner = asyncHandler(async (req: Request, res: Response)
         const limit: number = parseInt(req.query.limit);
         const startIndex = (page - 1) * limit;
         const ownerId = req.query.id;
-        const items = await Item.find({ owner: ownerId }).sort({ createdAt: -1 }).skip(startIndex).limit(limit).select(['-__v']);
+
+        let items;
+        const queryParams = req.query;
+        let allWordsFromQuery: string[] = [];
+
+        for (const key in queryParams) {
+            if (key.startsWith('q')) {
+                allWordsFromQuery.push(queryParams[key]?.toString().toLowerCase() as string);
+            }
+        }
+
+        if (allWordsFromQuery.length) {
+            items = await Item.find({
+                owner: ownerId,
+                $or: [
+                    { name: { $regex: allWordsFromQuery.map(word => new RegExp(word, 'i')).join('|') } },
+                    { description: { $regex: allWordsFromQuery.join('|'), $options: 'i' } },
+                    { 'additionalData.ingredients': { 
+                        $regex: allWordsFromQuery.join('|'), $options: 'i' 
+                    }}
+                ]
+            })
+            .skip(startIndex)
+            .limit(limit)
+            .select('-__v');
+        } else {
+            items = await Item.find({ owner: ownerId });
+        }
 
         res.status(200).json({ success: true, count: items.length, items })
     } else {
@@ -103,7 +185,31 @@ export const getItemsPerOwner = asyncHandler(async (req: Request, res: Response)
 // @Route /api/item/count
 // @Method GET
 export const getAllItemsCount = asyncHandler(async (req: Request, res: Response) => {
-    const count = await Item.countDocuments();
+    let count;
+    const queryParams = req.query;
+    let allWordsFromQuery: string[] = [];
+
+    for (const key in queryParams) {
+        if (key.startsWith('q')) {
+            allWordsFromQuery.push(queryParams[key] as string);
+        }
+    }
+
+    if (allWordsFromQuery.length) {
+        count = await Item.find({
+            $or: [
+                { name: { $regex: allWordsFromQuery.map(word => new RegExp(word, 'i')).join('|') } },
+                { description: { $regex: allWordsFromQuery.join('|'), $options: 'i' } },
+                { 'additionalData.ingredients': { 
+                    $regex: allWordsFromQuery.join('|'), $options: 'i' 
+                }}
+            ]
+        })
+        .select('-__v')
+        .count();
+    } else {
+        count = await Item.countDocuments();
+    }
     res.status(200).json({ success: true, count });
 });
 
