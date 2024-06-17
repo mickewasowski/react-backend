@@ -8,9 +8,9 @@ dotenv.config();
 const password = "commonPassword123";
 //juan@example.com
 const users = [
-    { email: "alice@example.com", fullName: "Alice Johnson", password: password },
-    { email: "bob@example.com", fullName: "Bob Smith", password: password },
-    { email: "carol@example.com", fullName: "Carol Martinez", password: password },
+    { email: "alice@example.com", fullName: "Alice Johnson", password: password, likedRecipes: [], ownedRecipes: [] },
+    { email: "bob@example.com", fullName: "Bob Smith", password: password, likedRecipes: [], ownedRecipes: [] },
+    { email: "carol@example.com", fullName: "Carol Martinez", password: password, likedRecipes: [], ownedRecipes: [] },
 ];
 
 const recepies = [
@@ -410,16 +410,22 @@ const seedRecepies = async () => {
     for (const recepe of first10Recepies) {
         const newRecepe = new Item({ ...recepe, owner: alice._id });
         await newRecepe.save();
+        alice.ownedRecipes.push(newRecepe.id);
+        await alice.save();
     }
 
     for (const recepe of second10Recepies) {
         const newRecepe = new Item({ ...recepe, owner: bob._id });
         await newRecepe.save();
+        bob.ownedRecipes.push(newRecepe.id);
+        await bob.save();
     }
 
     for (const recepe of third10Recepies) {
         const newRecepe = new Item({ ...recepe, owner: carol._id });
         await newRecepe.save();
+        carol.ownedRecipes.push(newRecepe.id);
+        await carol.save();
     }
 
     console.log('Recepies with owners seeded!');

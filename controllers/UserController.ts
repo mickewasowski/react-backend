@@ -118,7 +118,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
     }
 
     const user = new User({
-        email, fullName, password
+        email, fullName, password, likedRecipes: [], ownedRecipes: []
     });
 
     await user.save();
@@ -127,4 +127,88 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
         email: user.email,
         fullName: user.fullName
     } });
+});
+
+// @Desc like recipe
+// @Route /api/user/likeRecipe
+// @Method POST
+export const likeRecipe = asyncHandler(async (req: Request, res: Response) => {
+    const { recipeId } = req.body;
+    const token = req.headers.authorization?.replace('Bearer ', '') || '';
+    
+    const {success, payload} = verifyToken(token);
+
+    if(!success || !payload) {
+        res.status(500).json({success, message: 'Unauthorized'});
+        return;
+    }
+
+    const user = await User.findOne({ _id: payload.id });
+
+    if(!user) {
+        res.status(401).json({success: false, message: 'User not found'});
+        return;
+    }
+
+    if(!recipeId) {
+        res.status(405).json({success: false, message: 'Recipe ID is required'});
+        return;
+    }
+
+    user.likedRecipes.push(recipeId);
+
+    try {
+        await user.save();
+        res.status(201).json({ success: true, user: {
+            id: user._id,
+            email: user.email,
+            fullName: user.fullName,
+            token: generateToken(user._id),
+            likedRecipes: user.likedRecipes,
+        }});
+    } catch (error: any) {        
+        res.status(500).json({success: false, error});
+    }
+});
+
+// @Desc add owned recipe
+// @Route /api/user/addOwnedRecipe
+// @Method POST
+export const addOwnedRecipe = asyncHandler(async (req: Request, res: Response) => {
+    const { recipeId } = req.body;
+    const token = req.headers.authorization?.replace('Bearer ', '') || '';
+    
+    const {success, payload} = verifyToken(token);
+
+    if(!success || !payload) {
+        res.status(500).json({success, message: 'Unauthorized'});
+        return;
+    }
+
+    const user = await User.findOne({ _id: payload.id });
+
+    if(!user) {
+        res.status(401).json({success: false, message: 'User not found'});
+        return;
+    }
+
+    if(!recipeId) {
+        res.status(405).json({success: false, message: 'Recipe ID is required'});
+        return;
+    }
+
+    user.ownedRecipes.push(recipeId);
+
+    try {
+        await user.save();
+        res.status(201).json({ success: true, user: {
+            id: user._id,
+            email: user.email,
+            fullName: user.fullName,
+            token: generateToken(user._id),
+            ownedRecipes: user.ownedRecipes,
+        }});
+    } catch (error: any) {        
+        res.status(500).json({success: false, error});
+    }
 });

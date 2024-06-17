@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler';
 import { Request, Response } from 'express';
 import Item from '../models/Item';
 import { verifyToken } from '../utils/token';
+import User from '../models/User';
 
 // @Desc Get all itemss
 // @Route /api/item?page=1&limit=10
@@ -103,6 +104,8 @@ export const getAllItemsCountPerOwner = asyncHandler(async (req: Request, res: R
         return;
     }
 
+    const owner = await User.findOne({ _id: ownerId });
+
     let items;
     const queryParams = req.query;
     let allWordsFromQuery: string[] = [];
@@ -113,9 +116,9 @@ export const getAllItemsCountPerOwner = asyncHandler(async (req: Request, res: R
         }
     }
 
-    if (allWordsFromQuery.length) {
+    if (allWordsFromQuery.length && owner) {
         items = await Item.find({
-            owner: ownerId,
+            _id: { $in: owner.ownedRecipes },
             $or: [
                 { name: { $regex: allWordsFromQuery.map(word => new RegExp(word, 'i')).join('|') } },
                 { description: { $regex: allWordsFromQuery.join('|'), $options: 'i' } },
@@ -126,7 +129,7 @@ export const getAllItemsCountPerOwner = asyncHandler(async (req: Request, res: R
         })
         .select('-__v');
     } else {
-        items = await Item.find({ owner: ownerId });
+        items = await Item.find({ _id: { $in: owner?.ownedRecipes } });
     }
 
     if (items) {

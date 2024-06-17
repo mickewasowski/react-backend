@@ -2,12 +2,14 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
 export interface IUser extends mongoose.Document {
-    email: string,
-    fullName: string,
-    password: string,
-    token?: string,
-    createdAt: Date,
-    updatedAt: Date,
+    email: string;
+    fullName: string;
+    password: string;
+    token?: string;
+    likedRecipes: string[];
+    ownedRecipes: string[];
+    createdAt: Date;
+    updatedAt: Date;
     comparePassword(password: string): boolean;
 }
 
@@ -26,8 +28,17 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
+    },
 
+    likedRecipes: {
+        type: [String],
+        required: false,
+    },
+
+    ownedRecipes: {
+        type: [String],
+        required: false,
+    },
 }, {
     timestamps: true
 });
