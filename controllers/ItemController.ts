@@ -274,7 +274,9 @@ export const postItem = asyncHandler(async (req: Request, res: Response) => {
     if(!success || !payload) {
         res.status(500).json({success, message: "Unauthorized"});
         return;
-    }    
+    }
+
+    const owner = await User.findOne({ _id: payload.id });
 
     if(!name) {
         res.status(402).json({success: false, message: "missing 'name' field"});
@@ -288,6 +290,8 @@ export const postItem = asyncHandler(async (req: Request, res: Response) => {
     });
 
     await item.save();
+    owner?.ownedRecipes.push(item.id);
+    await owner?.save();
 
     res.status(201).json({ success: true, item});
 });
