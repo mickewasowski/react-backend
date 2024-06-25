@@ -24,7 +24,8 @@ const recepies = [
           "cookingTime": 60,
           "prepTime": 90,
           "servings": 4
-        }
+        },
+        "comments": [],
     },
     {
       "name": "Chicken Alfredo Pasta",
@@ -36,7 +37,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Vegetarian Stir-Fry",
@@ -48,7 +50,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Beef Tacos",
@@ -60,7 +63,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Caprese Salad",
@@ -72,7 +76,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Shrimp Scampi",
@@ -84,7 +89,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Vegan Buddha Bowl",
@@ -96,7 +102,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Homestyle Pizza",
@@ -108,7 +115,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Mango Salsa Chicken",
@@ -120,7 +128,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Spinach and Feta Stuffed Chicken",
@@ -132,7 +141,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Pasta Primavera",
@@ -144,7 +154,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Grilled Salmon",
@@ -156,7 +167,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Chicken Caesar Salad",
@@ -168,7 +180,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Stuffed Bell Peppers",
@@ -180,7 +193,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Teriyaki Tofu Stir-Fry",
@@ -192,7 +206,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Lemon Herb Roast Chicken",
@@ -204,7 +219,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Eggplant Parmesan",
@@ -216,7 +232,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Shrimp Fried Rice",
@@ -228,7 +245,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Quinoa Salad",
@@ -240,7 +258,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "BBQ Pulled Pork Sandwiches",
@@ -252,7 +271,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Mushroom Risotto",
@@ -264,7 +284,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Cauliflower Buffalo Wings",
@@ -276,7 +297,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Bruschetta",
@@ -288,7 +310,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Sweet Potato and Black Bean Tacos",
@@ -300,7 +323,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Pesto Pasta",
@@ -312,7 +336,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Honey Garlic Glazed Salmon",
@@ -324,7 +349,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Vegetable Curry",
@@ -336,7 +362,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Greek Salad",
@@ -348,7 +375,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Tofu Lettuce Wraps",
@@ -360,7 +388,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     },
     {
       "name": "Blueberry Pancakes",
@@ -372,7 +401,8 @@ const recepies = [
         "cookingTime": 60,
         "prepTime": 90,
         "servings": 4
-      }
+      },
+      "comments": [],
     }
 ];
 

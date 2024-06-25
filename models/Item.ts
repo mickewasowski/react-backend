@@ -1,18 +1,61 @@
-import mongoose, { ObjectId } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 
-export interface IItem extends mongoose.Document {
-    name: string,
-    description?: string,
-    type?: string,
-    image?: string,
-    owner: ObjectId,
-    additionalData?: Record<string, any>,
-    createdAt: Date,
-    updatedAt: Date,
-    hasSameOwner(item: string):boolean
+interface IComment {
+    id: string;
+    userId: string;
+    isAnon: boolean;
+    content: string;
+    createdAt: Date;
+    updatedAt: Date;
 }
 
-const ItemSchema = new mongoose.Schema({
+// Define the Comment type as a Mongoose schema
+const CommentSchema = new Schema<IComment>({
+    id: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    userId: {
+        type: String,
+        required: true,
+    },
+    isAnon: {
+        type: Boolean,
+        required: true
+    },
+    content: {
+        type: String,
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        required: true,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        required: true,
+        default: Date.now
+    }
+});
+
+export const Comment = mongoose.model<IComment>("Comment", CommentSchema);
+
+export interface IItem extends Document {
+    name: string;
+    description?: string;
+    type?: string;
+    image?: string;
+    owner: Types.ObjectId;
+    additionalData?: Record<string, any>;
+    comments: IComment[];
+    createdAt: Date;
+    updatedAt: Date;
+    hasSameOwner(ownerId: string): boolean;
+}
+
+const ItemSchema = new Schema<IItem>({
     name: {
         type: String,
         required: true
@@ -27,29 +70,34 @@ const ItemSchema = new mongoose.Schema({
         type: String
     },
     owner: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     additionalData: {
-        type: mongoose.Schema.Types.Mixed
+        type: Schema.Types.Mixed
+    },
+    comments: {
+        type: [CommentSchema],
+        default: []
     }
 }, {
     timestamps: true
 });
 
-ItemSchema.pre("save", async function(next) {
+ItemSchema.pre("save", async function (next) {
+    const item = this as IItem;
 
-    const item = this as unknown as IItem;
-
-    if(!item.isModified()) console.log(`Item ${item._id} is not modified`);
+    if (!this.isModified()) {
+        console.log(`Item ${item._id} is not modified`);
+    }
     
     return next();
 });
 
-ItemSchema.methods.hasSameOwner =  function(owner: string) {
+ItemSchema.methods.hasSameOwner = function (ownerId: string): boolean {
     const item = this as IItem;
-    return item.owner.toString() === owner;
+    return item.owner.toString() === ownerId;
 }
 
 const Item = mongoose.model<IItem>("Item", ItemSchema);

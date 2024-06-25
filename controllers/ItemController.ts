@@ -300,7 +300,6 @@ export const postItem = asyncHandler(async (req: Request, res: Response) => {
 // @Route /api/item
 // @Method DELETE
 export const deleteItem = asyncHandler(async (req: Request, res: Response) => {
-
     const { _id } = req.body;
     const token = req.headers.authorization?.replace('Bearer ', '') || '';
     
@@ -339,3 +338,19 @@ const getMutableItem = async (itemId: string, ownerId: string, res: Response) =>
 
     return item;
 };
+
+// @Desc Get item by id
+// @Route /api/item/get?id=1
+// @Method GET
+export const getRecipeById = asyncHandler(async (req: Request, res: Response) => {
+    if (typeof req.query.id === 'string') {
+        const recipeId = req.query.id;
+        const recipe = await Item.findById(recipeId);
+        
+        if (recipe) {
+            res.status(200).json({ success: true, item: recipe });
+        } else {
+            res.status(404).json({ success: false, message: 'Item not found!' });
+        }
+    }
+});
