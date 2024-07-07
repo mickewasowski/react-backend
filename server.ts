@@ -8,6 +8,7 @@ import cors from 'cors';
 import { Server } from 'socket.io';
 import Item, { Comment } from './models/Item';
 import mongoose from 'mongoose';
+import User from './models/User';
 
 dotenv.config();
 
@@ -41,18 +42,18 @@ const io = new Server(5505, {
 });
 
 io.on('connection', socket => {
-    console.log(socket.id);
+    //console.log(socket.id);
 
-    socket.on('typing-event-send', (recipeId) => {
-        console.log(`typing event for ${recipeId}`);
-        socket.emit('typing-event-receive', 'test receive');
-    });
+    // socket.on('typing-event-send', (recipeId) => {
+    //     console.log(`typing event for ${recipeId}`);
+    //     socket.emit('typing-event-receive', 'test receive');
+    // });
 
-    socket.on('add-comment', async ({ recipeId, authorId, commentText }) => {
-        console.log('add comment')
+    socket.on('add-comment', async ({ recipeId, authorId, commentText, isAnon }) => {
         const recipe = await Item.findOne({ _id: recipeId });
         if (recipe) {
-            const comment = new Comment({ id: new mongoose.Types.ObjectId().toString(), userId: authorId, isAnon: false, content: commentText, createdAt: Date.now(), updatedAt: Date.now() });
+            const user = await User.findOne({ _id: authorId });
+            const comment = new Comment({ id: new mongoose.Types.ObjectId().toString(), userId: authorId, authorName: user?.fullName, isAnon, content: commentText, createdAt: Date.now(), updatedAt: Date.now() });
             recipe.comments.push(comment);
             await recipe.save();
             console.log('Successfully added comment to recipeId:', recipe.id);

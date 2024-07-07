@@ -3,6 +3,7 @@ import mongoose, { Document, Schema, Types } from 'mongoose';
 interface IComment {
     id: string;
     userId: string;
+    authorName?: string;
     isAnon: boolean;
     content: string;
     createdAt: Date;
@@ -19,6 +20,10 @@ const CommentSchema = new Schema<IComment>({
     userId: {
         type: String,
         required: true,
+    },
+    authorName: {
+        type: String,
+        required: false
     },
     isAnon: {
         type: Boolean,
